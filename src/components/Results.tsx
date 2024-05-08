@@ -13,7 +13,7 @@ export const Results = ({ questions, answers }: Props) => {
             {key + 1}. {item.question}
           </div>
           <div>
-            <span>({item.answer === answers[key] ? "Acerto" : "Errou"}) - </span>
+            <span>({item.answer === answers[key] ? "Acertou" : "Errou"}) - </span>
             {item.options[item.answer]}
           </div>
         </div>
