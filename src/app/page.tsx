@@ -1,14 +1,34 @@
 "use client";
 
 import { QuestionItem } from "@/components/QuestionItem";
+import { Results } from "@/components/Results";
 import { questions } from "@/data/questions";
 import { useState } from "react";
 
 const Page = () => {
+  const [answers, setAnswers] = useState<number[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [showResults, setShowResults] = useState(false);
   const title = "Teste Seus Conhecimentos em React";
 
-  const handleAnswered = (answer:number) => {}
+  const loadNextQuestion = () => {
+    if (questions[currentQuestion + 1]) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setShowResults(true);
+    }
+  };
+
+  const handleAnswered = (answer: number) => {
+    setAnswers([...answers, answer]);
+    loadNextQuestion();
+  };
+
+  const handleRestartButton = () => {
+    setAnswers([]);
+    setCurrentQuestion(0);
+    setShowResults(false);
+  };
 
   return (
     <div className="w-full h-screen flex justify-center items-center bg-blue-600">
@@ -17,14 +37,27 @@ const Page = () => {
           {title}
         </div>
         <div className="p-5">
+          {!showResults && (
             <QuestionItem
-                question={questions[currentQuestion]}
-                count={currentQuestion + 1}
-                onAnswer={handleAnswered}
+              question={questions[currentQuestion]}
+              count={currentQuestion + 1}
+              onAnswer={handleAnswered}
             />
+          )}
+          {showResults && <Results questions={questions} answers={answers} />}
         </div>
         <div className="p-5 text-center border-t border-gray-300">
-          {currentQuestion + 1} de {questions.length} pergunta{questions.length === 1 ? "" : "s"}
+          {!showResults &&
+            `${currentQuestion + 1} de ${questions.length} pergunta
+            ${questions.length === 1 ? "" : "s"}`}
+          {showResults && (
+            <button
+              onClick={handleRestartButton}
+              className="px-3 py-2 rounded-md bg-blue-800 text-white"
+            >
+              Reinciar Quiz
+            </button>
+          )}
         </div>
       </div>
     </div>
